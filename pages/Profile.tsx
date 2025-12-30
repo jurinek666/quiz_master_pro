@@ -1,9 +1,64 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { RenderDatabase } from '../services/db';
+import { TeamMember } from '../types';
+
+const SPECIALIZATIONS = [
+  { id: 'geo', label: 'Geografie', icon: 'public' },
+  { id: 'hist', label: 'Historie', icon: 'history_edu' },
+  { id: 'music', label: 'Hudba', icon: 'music_note' },
+  { id: 'sci', label: 'Věda', icon: 'science' },
+  { id: 'pop', label: 'Popkultura', icon: 'movie' },
+  { id: 'sport', label: 'Sport', icon: 'sports_soccer' },
+];
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [user, setUser] = useState<TeamMember | null>(null);
+  const [selectedSpecs, setSelectedSpecs] = useState<string[]>([]);
+  const [name, setName] = useState('');
+
+  useEffect(() => {
+    const load = async () => {
+      const team = await RenderDatabase.getTeam();
+      const me = team.find(m => m.isMe);
+      if (me) {
+        setUser(me);
+        setName(me.name);
+        // Poznámka: Specializace by normálně byly součástí modelu TeamMember, 
+        // zde je simulujeme jako extra stav uložený v localStorage pro tento profil.
+        const savedSpecs = localStorage.getItem('qm_user_specs');
+        if (savedSpecs) setSelectedSpecs(JSON.parse(savedSpecs));
+      }
+      setLoading(false);
+    };
+    load();
+  }, []);
+
+  const toggleSpec = (id: string) => {
+    if (selectedSpecs.includes(id)) {
+      setSelectedSpecs(selectedSpecs.filter(s => s !== id));
+    } else if (selectedSpecs.length < 2) {
+      setSelectedSpecs([...selectedSpecs, id]);
+    }
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    await RenderDatabase.updateUserProfile({ name });
+    localStorage.setItem('qm_user_specs', JSON.stringify(selectedSpecs));
+    setSaving(false);
+    navigate('/');
+  };
+
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="size-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+    </div>
+  );
 
   return (
     <div className="flex flex-col min-h-screen bg-background-light dark:bg-background-dark">
@@ -12,26 +67,26 @@ const Profile: React.FC = () => {
           onClick={() => navigate(-1)}
           className="text-base font-semibold text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors"
         >
-          Cancel
+          Zrušit
         </button>
-        <h2 className="text-lg font-bold">Edit Profile</h2>
+        <h2 className="text-lg font-bold">Upravit profil</h2>
         <button 
-          onClick={() => navigate('/')}
-          className="text-base font-bold text-primary hover:text-primary/80 transition-colors"
+          onClick={handleSave}
+          disabled={saving}
+          className="text-base font-bold text-primary hover:text-primary/80 transition-colors disabled:opacity-50"
         >
-          Save
+          {saving ? 'Ukládání...' : 'Uložit'}
         </button>
       </header>
 
       <main className="flex-1 flex flex-col items-center px-5 pt-8 pb-12 overflow-y-auto">
-        {/* Avatar Section */}
         <div className="flex flex-col items-center gap-4 mb-10 w-full">
           <div className="relative group cursor-pointer">
             <div className="w-28 h-28 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden ring-4 ring-white dark:ring-background-dark shadow-2xl">
               <img 
                 alt="Profile" 
                 className="w-full h-full object-cover group-hover:opacity-75 transition-opacity" 
-                src="https://i.pravatar.cc/150?u=sarahlee" 
+                src={user?.avatar || "https://i.pravatar.cc/150?u=sarahlee"} 
               />
             </div>
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
@@ -41,73 +96,62 @@ const Profile: React.FC = () => {
               <span className="material-symbols-outlined text-[16px]">edit</span>
             </div>
           </div>
-          <button className="text-primary font-bold text-sm uppercase tracking-wider hover:underline">
-            Change Photo
-          </button>
         </div>
 
-        {/* Form Fields */}
-        <div className="w-full space-y-6">
-          <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Full Name</label>
-            <div className="relative">
-              <input 
-                type="text" 
-                defaultValue="Alex Rivera" 
-                className="w-full h-14 px-5 rounded-2xl bg-white dark:bg-card-dark border-none focus:ring-2 focus:ring-primary shadow-sm font-semibold"
+        <div className="w-full space-y-8">
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Celé jméno</label>
+              <div className="relative">
+                <input 
+                  type="text" 
+                  value={name} 
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full h-14 px-5 rounded-2xl bg-white dark:bg-card-dark border-none focus:ring-2 focus:ring-primary shadow-sm font-semibold"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Specializace (max 2)</label>
+              <div className="grid grid-cols-2 gap-3">
+                {SPECIALIZATIONS.map((spec) => {
+                  const isSelected = selectedSpecs.includes(spec.id);
+                  const isMaxed = selectedSpecs.length >= 2 && !isSelected;
+                  
+                  return (
+                    <button
+                      key={spec.id}
+                      onClick={() => toggleSpec(spec.id)}
+                      disabled={isMaxed}
+                      className={`flex items-center gap-3 p-3 rounded-2xl border transition-all ${
+                        isSelected 
+                          ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20' 
+                          : 'bg-white dark:bg-card-dark border-transparent text-slate-600 dark:text-slate-400 opacity-100'
+                      } ${isMaxed ? 'opacity-40 grayscale cursor-not-allowed' : ''}`}
+                    >
+                      <span className="material-symbols-outlined text-[20px] shrink-0">
+                        {spec.icon}
+                      </span>
+                      <span className="text-xs font-bold whitespace-nowrap overflow-hidden text-ellipsis">
+                        {spec.label}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Bio</label>
+              <textarea 
+                rows={3}
+                placeholder="Řekni týmu něco o sobě..."
+                className="w-full p-5 rounded-2xl bg-white dark:bg-card-dark border-none focus:ring-2 focus:ring-primary shadow-sm font-medium resize-none"
+                defaultValue="Vždy připravená na hudební a filmové kolo! 🧠✨"
               />
-              <span className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined text-[20px]">person</span>
             </div>
           </div>
-
-          <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Email Address</label>
-            <div className="relative">
-              <input 
-                type="email" 
-                defaultValue="alex.rivera@example.com" 
-                className="w-full h-14 px-5 rounded-2xl bg-white dark:bg-card-dark border-none focus:ring-2 focus:ring-primary shadow-sm font-semibold"
-              />
-              <span className="absolute right-5 top-1/2 -translate-y-1/2 text-accent-green material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Password</label>
-            <div className="relative">
-              <input 
-                type="password" 
-                defaultValue="password123" 
-                className="w-full h-14 px-5 pr-14 rounded-2xl bg-white dark:bg-card-dark border-none focus:ring-2 focus:ring-primary shadow-sm font-semibold"
-              />
-              <button className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400">
-                <span className="material-symbols-outlined text-[20px]">visibility</span>
-              </button>
-            </div>
-            <p className="text-[10px] font-medium text-slate-500 italic ml-1 mt-1">Leave blank to keep current password.</p>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Bio</label>
-            <textarea 
-              rows={3}
-              placeholder="Tell your team about yourself..."
-              className="w-full p-5 rounded-2xl bg-white dark:bg-card-dark border-none focus:ring-2 focus:ring-primary shadow-sm font-medium resize-none"
-              defaultValue="Ready to crush trivia night! 🧠✨"
-            />
-          </div>
-        </div>
-
-        {/* Danger Zone */}
-        <div className="w-full mt-10 space-y-4">
-          <div className="w-full h-px bg-slate-200 dark:bg-slate-800" />
-          <button className="flex items-center justify-center w-full h-14 rounded-2xl bg-slate-100 dark:bg-card-dark text-slate-700 dark:text-slate-300 font-bold text-sm hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors gap-3">
-            <span className="material-symbols-outlined">logout</span>
-            Sign Out
-          </button>
-          <button className="flex items-center justify-center w-full h-14 rounded-2xl bg-red-50 dark:bg-red-900/10 text-accent-red font-bold text-sm hover:bg-red-100 dark:hover:bg-red-900/20 transition-all border border-transparent dark:border-red-900/20">
-            Delete Account
-          </button>
         </div>
       </main>
     </div>

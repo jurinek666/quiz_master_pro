@@ -11,6 +11,7 @@ export const MOCK_QUIZZES: QuizEvent[] = [
     day: '24',
     time: '19:00',
     theme: 'General Knowledge',
+    description: 'A classic mid-week trivia session focusing on history, pop culture, and sports. Great for warming up for the bigger weekend events.',
     status: QuizStatus.CONFIRMED,
     slotsOpen: '2/5 Slots Open',
     imageUrl: 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&q=80&w=400',
@@ -24,6 +25,7 @@ export const MOCK_QUIZZES: QuizEvent[] = [
     day: '26',
     time: '20:00',
     theme: 'Science Fiction',
+    description: 'Deep dives into futuristic tech, classic sci-fi literature, and blockbuster space operas. Hosted by the local robotics club.',
     status: QuizStatus.CONFIRMED,
     isUserIn: true,
     imageUrl: 'https://images.unsplash.com/photo-1507413245164-6160d8298b31?auto=format&fit=crop&q=80&w=400',
@@ -37,6 +39,7 @@ export const MOCK_QUIZZES: QuizEvent[] = [
     day: '12',
     time: '19:30',
     theme: '80s Music',
+    description: 'Test your knowledge of the greatest decade of music. From synth-pop to hair metal, we cover all the chart-toppers and one-hit wonders.',
     status: QuizStatus.CONFIRMED,
     isUserIn: true,
     imageUrl: 'https://images.unsplash.com/photo-1574096079513-d8259312b785?auto=format&fit=crop&q=80&w=400',
@@ -50,6 +53,7 @@ export const MOCK_QUIZZES: QuizEvent[] = [
     day: '19',
     time: '20:00',
     theme: 'General Cinema',
+    description: 'A cinematic journey through the ages. Rounds include soundtrack identification, director trivia, and iconic movie quotes.',
     status: QuizStatus.PENDING,
   },
   {
@@ -61,6 +65,7 @@ export const MOCK_QUIZZES: QuizEvent[] = [
     day: '26',
     time: '19:30',
     theme: 'General Knowledge',
+    description: 'The monthly championship round. Expect high difficulty questions across all categories. Bring your A-game and your best researchers!',
     status: QuizStatus.PENDING,
   }
 ];
@@ -115,7 +120,7 @@ export const NOTIFICATIONS: Notification[] = [
   {
     id: '1',
     title: 'Deadline Approaching',
-    message: "The sign-up window for the 'Science Trivia' night closes in 2 hours. Tap to confirm availability.",
+    message: "The sign-up window for the 'Science Trivia' night at TechHub Lounge closes in precisely 2 hours. We currently have 3 slots open. Please tap here to confirm your availability or decline if you cannot make it.",
     time: '2m',
     type: 'alert',
     unread: true,
@@ -123,7 +128,7 @@ export const NOTIFICATIONS: Notification[] = [
   {
     id: '2',
     title: 'Captain John',
-    message: "Hey everyone, don't forget to study the geography section for tonight. We need those points!",
+    message: "Hey team! I've been looking over some old music charts. Don't forget to brush up on early 80s synth-pop for the Golden Lion event. It's often a tie-breaker round. Also, someone check the local sports results from last night!",
     time: '1h',
     type: 'message',
     unread: true,
@@ -132,7 +137,7 @@ export const NOTIFICATIONS: Notification[] = [
   {
     id: '3',
     title: "You're In!",
-    message: 'Your spot for the Friday Quiz has been confirmed. Good luck!',
+    message: 'Your spot for the Friday Music Quiz has been officially confirmed by the team lead. You are assigned as the primary researcher for the Pop Culture round. Good luck!',
     time: '1d',
     type: 'system',
     unread: false,
@@ -140,7 +145,7 @@ export const NOTIFICATIONS: Notification[] = [
   {
     id: '4',
     title: 'Sign Out Successful',
-    message: 'You have successfully withdrawn from the Monday match.',
+    message: 'You have successfully withdrawn from the Monday Cinema match. Your slot has been released back to the team pool. Thank you for notifying us in advance.',
     time: '1d',
     type: 'system',
     unread: false,

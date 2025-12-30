@@ -15,6 +15,7 @@ export interface QuizEvent {
   time: string;
   theme: string;
   status: QuizStatus;
+  description?: string;
   slotsOpen?: string;
   isUserIn?: boolean;
   imageUrl?: string;
