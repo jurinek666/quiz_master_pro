@@ -1,5 +1,5 @@
-
-import { PrismaClient } from '@prisma/client';
+// @ts-ignore
+const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
@@ -16,6 +16,7 @@ const MOCK_QUIZZES = [
     status: 'CONFIRMED',
     slotsOpen: '2/5 Slots Open',
     imageUrl: 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&q=80&w=400',
+    sortDate: new Date('2023-10-24T19:00:00Z'),
   },
   {
     name: 'Science & Tech Quiz',
@@ -29,6 +30,7 @@ const MOCK_QUIZZES = [
     status: 'CONFIRMED',
     isUserIn: true,
     imageUrl: 'https://images.unsplash.com/photo-1507413245164-6160d8298b31?auto=format&fit=crop&q=80&w=400',
+    sortDate: new Date('2023-10-26T20:00:00Z'),
   },
   {
     name: 'Golden Lion Pub',
@@ -42,6 +44,7 @@ const MOCK_QUIZZES = [
     status: 'CONFIRMED',
     isUserIn: true,
     imageUrl: 'https://images.unsplash.com/photo-1574096079513-d8259312b785?auto=format&fit=crop&q=80&w=400',
+    sortDate: new Date('2023-11-12T19:30:00Z'),
   }
 ];
 

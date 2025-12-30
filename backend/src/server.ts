@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
-import { PrismaClient } from '@prisma/client';
+// @ts-ignore
+const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 const app = express();
@@ -16,9 +17,11 @@ app.get('/api/health', (req, res) => res.send('OK'));
 // --- Quizzes ---
 app.get('/api/quizzes', async (req, res) => {
   try {
-    const quizzes = await prisma.quiz.findMany({ orderBy: { day: 'asc' } });
+    // Sort by sortDate instead of string 'day' to ensure correct cross-month ordering
+    const quizzes = await prisma.quiz.findMany({ orderBy: { sortDate: 'asc' } });
     res.json(quizzes);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: 'Failed to fetch quizzes' });
   }
 });
@@ -34,7 +37,7 @@ app.post('/api/quizzes/:id/attendance', async (req, res) => {
       data: { isUserIn: !quiz.isUserIn }
     });
 
-    const updatedQuizzes = await prisma.quiz.findMany({ orderBy: { day: 'asc' } });
+    const updatedQuizzes = await prisma.quiz.findMany({ orderBy: { sortDate: 'asc' } });
     res.json(updatedQuizzes);
   } catch (error) {
     res.status(500).json({ error: 'Failed to update attendance' });
