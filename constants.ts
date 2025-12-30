@@ -1,0 +1,148 @@
+
+import { QuizEvent, QuizStatus, TeamMember, Notification } from './types';
+
+export const MOCK_QUIZZES: QuizEvent[] = [
+  {
+    id: '1',
+    name: 'Pub Trivia Night',
+    venue: 'The Rusty Anchor',
+    date: 'Oct 24',
+    month: 'Oct',
+    day: '24',
+    time: '19:00',
+    theme: 'General Knowledge',
+    status: QuizStatus.CONFIRMED,
+    slotsOpen: '2/5 Slots Open',
+    imageUrl: 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&q=80&w=400',
+  },
+  {
+    id: '2',
+    name: 'Science & Tech Quiz',
+    venue: 'TechHub Lounge',
+    date: 'Oct 26',
+    month: 'Oct',
+    day: '26',
+    time: '20:00',
+    theme: 'Science Fiction',
+    status: QuizStatus.CONFIRMED,
+    isUserIn: true,
+    imageUrl: 'https://images.unsplash.com/photo-1507413245164-6160d8298b31?auto=format&fit=crop&q=80&w=400',
+  },
+  {
+    id: '3',
+    name: 'Golden Lion Pub',
+    venue: 'The Golden Lion Pub',
+    date: 'Nov 12',
+    month: 'Nov',
+    day: '12',
+    time: '19:30',
+    theme: '80s Music',
+    status: QuizStatus.CONFIRMED,
+    isUserIn: true,
+    imageUrl: 'https://images.unsplash.com/photo-1574096079513-d8259312b785?auto=format&fit=crop&q=80&w=400',
+  },
+  {
+    id: '4',
+    name: 'Trivia Newton John',
+    venue: 'The Royal Oak',
+    date: 'Nov 19',
+    month: 'Nov',
+    day: '19',
+    time: '20:00',
+    theme: 'General Cinema',
+    status: QuizStatus.PENDING,
+  },
+  {
+    id: '5',
+    name: 'Quizimodo',
+    venue: 'The Red Lion',
+    date: 'Nov 26',
+    month: 'Nov',
+    day: '26',
+    time: '19:30',
+    theme: 'General Knowledge',
+    status: QuizStatus.PENDING,
+  }
+];
+
+export const TEAM_MEMBERS: TeamMember[] = [
+  {
+    id: 'me',
+    name: 'Sarah Lee',
+    role: 'Goalkeeper',
+    avatar: 'https://i.pravatar.cc/150?u=sarahlee',
+    status: 'Active',
+    isMe: true,
+  },
+  {
+    id: '1',
+    name: 'Jane Doe',
+    role: 'Team Lead',
+    avatar: 'https://i.pravatar.cc/150?u=janedoe',
+    status: 'Available',
+  },
+  {
+    id: '2',
+    name: 'Marcus Johnson',
+    role: 'Co-Captain',
+    avatar: 'https://i.pravatar.cc/150?u=marcus',
+    status: 'Away',
+  },
+  {
+    id: '3',
+    name: 'Sarah Miller',
+    role: 'Researcher',
+    avatar: 'https://i.pravatar.cc/150?u=sarahm',
+    status: 'Available',
+  },
+  {
+    id: '4',
+    name: 'David Chen',
+    role: 'Defender',
+    avatar: 'https://i.pravatar.cc/150?u=davidc',
+    status: 'Available',
+  },
+  {
+    id: '5',
+    name: 'Alex Rivera',
+    role: 'Striker',
+    avatar: 'https://i.pravatar.cc/150?u=alexr',
+    status: 'Available',
+  }
+];
+
+export const NOTIFICATIONS: Notification[] = [
+  {
+    id: '1',
+    title: 'Deadline Approaching',
+    message: "The sign-up window for the 'Science Trivia' night closes in 2 hours. Tap to confirm availability.",
+    time: '2m',
+    type: 'alert',
+    unread: true,
+  },
+  {
+    id: '2',
+    title: 'Captain John',
+    message: "Hey everyone, don't forget to study the geography section for tonight. We need those points!",
+    time: '1h',
+    type: 'message',
+    unread: true,
+    avatar: 'https://i.pravatar.cc/150?u=john',
+  },
+  {
+    id: '3',
+    title: "You're In!",
+    message: 'Your spot for the Friday Quiz has been confirmed. Good luck!',
+    time: '1d',
+    type: 'system',
+    unread: false,
+  },
+  {
+    id: '4',
+    title: 'Sign Out Successful',
+    message: 'You have successfully withdrawn from the Monday match.',
+    time: '1d',
+    type: 'system',
+    unread: false,
+  }
+];
